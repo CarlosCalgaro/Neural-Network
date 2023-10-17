@@ -48,8 +48,8 @@ model.sequential([
 
 print(x_train[:5])
 x_train = x_train / np.sum(x_train, axis = 0)
-breakpoint()
-y_train = y_train / np.sum(y_train, axis = 0)
+# breakpoint()
+# y_train = y_train / np.sum(y_train, axis = 0)
 print(x_train[:5])
 
 # Converting to numpy array
