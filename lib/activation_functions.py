@@ -5,11 +5,15 @@ def step_function(inputs):
 
 def sigmoid(inputs):
     return 1/(1 + np.exp(-inputs))
+
+def linear(inputs):
+    return inputs
+
 def sigmoid_stable(x):
     return np.where(
             x >= 0, # condition
-            1 / (1 + np.exp(-x)), # For positive values
-            np.exp(x) / (1 + np.exp(x)) # For negative values
+            1. / (1. + np.exp(-x)), # For positive values
+            np.exp(x) / (1. + np.exp(x)) # For negative values
     )
 
 def sigmoid_derivative_stable(x):
@@ -35,3 +39,7 @@ def softmax(inputs):
     val = np.exp(inputs - np.max(inputs, axis=1, keepdims=True))
     return val / np.sum(val, axis=1, keepdims=True)
 
+def softmax_derivative(inputs):
+    # Reshape the 1-d softmax to 2-d so that np.dot will do the matrix multiplication
+    s = inputs.reshape(-1,1)
+    return np.diagflat(s) - np.dot(s, s.T)

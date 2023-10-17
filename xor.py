@@ -16,14 +16,14 @@ y_train = np.array([[0], [1], [1], [0]])
 model = Model()
 model.sequential([
     Dense(2, 3),
-    Activation(activation_function = tanh, activation_function_derivative = tanh_derivative),
+    Activation(activation_function = sigmoid_stable, activation_function_derivative = sigmoid_derivative_stable),
     Dense(3, 1),
-    Activation(activation_function = tanh, activation_function_derivative = tanh_derivative)
+    Activation(activation_function = sigmoid_stable, activation_function_derivative = sigmoid_derivative_stable)
 ])
 
 
 model.inspect()
-model.fit(x_train, y_train, 100000, 0.2)
+model.fit(x_train, y_train, 200000, 0.02)
 
 # print(model.predict([[0, 1]]))
 for inputs in x_train:
