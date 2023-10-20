@@ -10,8 +10,6 @@ class Model:
     def fit(self, x_train, y_train, epochs, learning_rate = 0.02, optimizer=SGD):
         samples = len(x_train)
         for i in range(epochs):
-            # if i == 5:
-                # breakpoint()
             # Forward pass
             err = 0
             for j in range(samples):

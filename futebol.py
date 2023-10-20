@@ -20,43 +20,66 @@ result_types = {
 data["FTR"] = data["FTR"].apply(lambda x: np.eye(3)[result_types[x]])
 data["HTR"] = data["HTR"].apply(lambda x: np.eye(3)[result_types[x]])
 
-input_data = data.drop(columns=["FTAG", "FTHG", "HomeTeam", "AwayTeam", "FTR", "HTR"])
+x_train = data.drop(columns=["FTAG", "FTHG", "HomeTeam", "AwayTeam", "FTR", "HTR"])
 
 # Para um sistema preditivo de meio tempo pra frente, comentar abaixo:
-input_data = input_data.drop(columns=["HTAG", "HTHG"])
+x_train = x_train.drop(columns=["HTAG", "HTHG"])
 
-output_data = data["FTR"]
+y_train = data["FTR"]
 
-print(input_data.head())
-
-print(output_data)
 
 
 model = Model()
 
 model.sequential([
-    # Dense(14, 36),
     Dense(12, 36),
-    Activation(activation_function = sigmoid_stable, activation_function_derivative = sigmoid_derivative_stable),
+    Activation(activation_function = ReLU, activation_function_derivative = ReLU_derivative),
     Dense(36, 48),
-    Activation(activation_function = sigmoid_stable, activation_function_derivative = sigmoid_derivative_stable),
-    # Dense(48, 123),
-    # Activation(activation_function = sigmoid, activation_function_derivative = sigmoid_derivative),
+    Activation(activation_function = ReLU, activation_function_derivative = ReLU_derivative),
     Dense(48, 3),
     Activation(activation_function = sigmoid_stable, activation_function_derivative = sigmoid_derivative_stable),
-    # Activation(activation_function = softmax, activation_function_derivative = softmax_derivative),
 ])
 
+# Normalizing data
+# breakpoint()
+print(x_train[:5])
+x_train = (x_train - x_train.min())/(x_train.max() - x_train.min())
+# x_train = x_train / np.sum(x_train, axis = 0)
+# breakpoint()
+# y_train = y_train / np.sum(y_train, axis = 0)
+print(x_train[:5])
 
-print(input_data[:5])
-model.fit(input_data.to_numpy(), output_data.to_numpy(), 500, 0.06)
+# Converting to numpy array
+
+x_train = x_train.to_numpy()
+y_train = y_train.to_numpy()
+
+trim_index = int(len(x_train) * 0.8)
+x_test = x_train[trim_index:]
+x_train = x_train[:trim_index]
+
+y_test =  y_train[trim_index:]
+y_train = y_train[:trim_index]
+
+model.fit(x_train, y_train, 300, 0.2)
 
 correct_count = 0
-for idx, inputs in enumerate(input_data.to_numpy()):
-    predicted = model.predict(inputs)
-    predicted = np.eye(3)[np.argmax(predicted)]
-    if np.array_equal(output_data[idx], predicted):
-        correct_count += 1
-    print("Predict ", inputs, output_data[idx], "=", predicted)
 
-print(correct_count, " of ", len(input_data), " That's a ", (correct_count/len(input_data))*100, "% of correctness")
+for idx, inputs in enumerate(x_train):
+    predicted = model.predict(inputs)
+    result = np.eye(3)[np.argmax(predicted)]
+    if np.array_equal(y_train[idx], result):
+        correct_count += 1
+    print("Predict ", inputs, y_train[idx], "=", result, "Original: ", predicted)
+
+print(correct_count, " of ", len(x_train), " That's a ", (correct_count/len(x_train))*100, "% of correctness")
+
+print("Now running against test data")
+correct_count = 0
+for idx, inputs in enumerate(x_test):
+    predicted = model.predict(inputs)
+    result = np.eye(3)[np.argmax(predicted)]
+    if np.array_equal(y_test[idx], result):
+        correct_count += 1
+    # print("Predict ", inputs, y_train[idx], "=", result, "Original: ", predicted)
+print(correct_count, " of ", len(x_test), " That's a ", (correct_count/len(x_test))*100, "% of correctness")

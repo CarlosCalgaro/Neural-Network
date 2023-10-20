@@ -1,14 +1,12 @@
 
 import numpy as np
 from lib.layers.layer import Layer
-from lib.optimizers.sgd import SGD
 
 class Dense(Layer):
 
-    def __init__(self, n_inputs, n_neurons, optimizer=SGD(), activation_function = None) -> None:
-        self.weights = np.random.randn(n_inputs, n_neurons)* 0.001
+    def __init__(self, n_inputs, n_neurons,activation_function = None) -> None:
+        self.weights = np.random.randn(n_inputs, n_neurons) * 0.1
         self.biases = np.zeros((1, n_neurons)) # Bias Vector using 0
-        self.optimizer = optimizer
         self.activation_function = activation_function
 
     def forward(self, inputs):
@@ -28,5 +26,3 @@ class Dense(Layer):
         self.weights -=  learning_rate * weights_error
         self.biases -= learning_rate * output_error
         return input_error
-
-
