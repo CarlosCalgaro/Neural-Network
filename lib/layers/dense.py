@@ -4,7 +4,7 @@ from lib.layers.layer import Layer
 
 class Dense(Layer):
 
-    def __init__(self, n_inputs, n_neurons,activation_function = None) -> None:
+    def __init__(self, n_inputs, n_neurons, activation_function = None) -> None:
         self.weights = np.random.randn(n_inputs, n_neurons) * 0.1
         self.biases = np.zeros((1, n_neurons)) # Bias Vector using 0
         self.activation_function = activation_function
